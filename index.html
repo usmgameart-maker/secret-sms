@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Секретные SMS Деду Морозу</title>
+  <link rel="stylesheet" href="files/style.css">
+</head>
+<body>
+  <div class="snow" id="snow" aria-hidden="true"></div>
+
+  <!-- ЭКРАН 1: ОБЛОЖКА -->
+  <section id="screen-start" class="screen active">
+    <div class="cover">
+      <div class="cover-text">
+        <div class="badge" id="start-badge"></div>
+        <h1 id="start-title"></h1>
+        <p class="cover-tagline" id="start-tagline">Расшифруй 15 SMS и узнай, о каких подарках мечтают дети.</p>
+        <p class="lead">На старый кнопочный телефон Деда Мороза приходят SMS от детей. Вместо названий подарков — цифры! Помоги расшифровать желания ребят по буквам на клавишах.</p>
+        <ul class="how">
+          <li><span class="how-num">1</span><span>Открой SMS. Каждая цифра заменяет одну из букв на клавише.</span></li>
+          <li><span class="how-num">2</span><span>Расшифруй слово и выбери подарок на полке. <br>Например: 408 = мяч.</span></li>
+          <li><span class="how-num">3</span><span>Собери мешок из <b id="start-count">15</b> подарков и получи награды.</span></li>
+        </ul>
+        <div class="start-actions">
+          <button class="btn btn-primary hidden" id="btn-continue"></button>
+          <button class="btn btn-primary" id="btn-start">Начать</button>
+        </div>
+        <p class="save-note">Прогресс сохраняется автоматически. <button class="teacher-link" id="btn-guide-start" type="button">Методичка для учителя</button></p>
+      </div>
+      <div class="cover-ded"><img src="files/img/ded-happy.png" alt="Дед Мороз"></div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 2: ИГРА -->
+  <section id="screen-game" class="screen">
+    <header class="topbar">
+      <div class="progress" id="progress"></div>
+      <div class="topbar-right">
+        <div class="pill" title="Время расшифровки SMS"><span>⏱</span> <span id="timer">0:00</span></div>
+        <div class="pill" title="Подарков в мешке"><span>🎁</span> <span id="sack-count">0</span>/<span id="sack-total">15</span></div>
+        <button class="pill pill-btn" id="btn-awards" title="Награды"><span>🏆</span> <span id="awards-count">0</span></button>
+        <button class="icon-btn" id="btn-sound" title="Звук">🔊</button>
+      </div>
+    </header>
+
+    <!-- 2а. Пришло SMS -->
+    <div class="stage" id="stage-mail">
+      <div class="mailbox-wrap">
+        <div class="phone phone-incoming" id="incoming-phone">
+  <div class="phone-speaker" aria-hidden="true"></div>
+  <div class="phone-screen">
+    <div class="phone-status"><span>ДЕД МОРОЗ</span><span aria-hidden="true">▮▮▮ ▰</span></div>
+    <div class="sms-notification" aria-hidden="true">SMS <span class="sms-badge">1</span></div><div id="env-from"></div><div class="phone-caption">Новое сообщение</div>
+  </div>
+  <div class="phone-nav" aria-hidden="true"><span>●</span><span>▣</span><span>↩</span></div>
+  <div class="phone-keypad" aria-label="Ключ к шифру"></div>
+</div>
+        <div class="mail-text">
+          <div class="mail-num" id="mail-num"></div>
+          <h2 id="mail-title"></h2>
+          <div class="mail-hint" id="mail-hint"></div>
+          <button class="btn btn-primary btn-big" id="btn-open">Открыть SMS</button>
+          <p class="mail-note">Открой SMS, расшифруй слово и выбери подарок. Телефон с буквами останется перед глазами.</p>
+        </div>
+      </div>
+      <aside class="incoming-assistant" aria-label="Подсказка Деда Мороза">
+        <p class="incoming-bubble">Помоги мне расшифровать SMS, чтобы правильно выбрать подарок!</p>
+        <img src="files/img/ded-sms.png" alt="Дед Мороз читает новое SMS на кнопочном телефоне" width="1088" height="1472">
+      </aside>
+    </div>
+
+    <!-- 2б. SMS и кладовая -->
+    <div class="stage hidden" id="stage-letter">
+      <div class="letter-col">
+        <div class="phone" id="game-phone">
+  <div class="phone-speaker" aria-hidden="true"></div>
+  <div class="phone-screen">
+    <div class="phone-status"><span>ДЕД МОРОЗ</span><span aria-hidden="true">▮▮▮ ▰</span></div>
+    <div class="letter-head"><span class="letter-from" id="letter-from"></span><span class="letter-mech" id="letter-mech"></span></div><div class="letter-body"><div class="letter-text" id="letter-text"></div></div>
+  </div>
+  <div class="phone-nav" aria-hidden="true"><span>●</span><span>▣</span><span>↩</span></div>
+  <div class="phone-keypad" aria-label="Ключ к шифру"></div>
+</div>
+        <p class="sms-help" id="sms-help">Одна цифра — одна буква. Сверься с клавишами и выбери подарок на полке.</p>
+      </div>
+
+      <div class="side" id="gift-side">
+        <div class="storeroom" id="storeroom">
+          <div class="store-head">
+            <h3 id="store-q"></h3>
+            <span class="store-hint">Выбери подарок на полке</span>
+          </div>
+          <div class="shelves" id="shelves"></div>
+        </div>
+      </div>
+      <div class="result hidden" id="result" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 3: ФИНАЛ -->
+  <section id="screen-finish" class="screen">
+    <div class="finish">
+      <div class="finish-ded"><img src="files/img/ded-happy.png" alt=""></div>
+      <div class="finish-main">
+        <div class="finish-head">
+          <div>
+            <div class="badge">Все подарки собраны!</div>
+            <h1>Спасибо, помощник!</h1>
+          </div>
+          <div class="finish-actions">
+            <button class="btn btn-secondary" id="btn-guide-finish" type="button">Методичка</button>
+            <button class="btn btn-secondary" id="btn-diploma">🏅 Грамота</button>
+            <button class="btn btn-primary" id="btn-restart">Сыграть ещё раз</button>
+          </div>
+        </div>
+        <div class="stats" id="stats"></div>
+        <h3 class="sub">Награды</h3>
+        <div class="awards" id="finish-awards"></div>
+        <h3 class="sub">Подарки и время расшифровки</h3>
+        <div class="kids" id="kids"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Методичка открывается поверх обложки или итогов и не меняет игровую сетку. -->
+  <dialog class="guide-modal" id="guide-modal" aria-labelledby="guide-title">
+    <div class="guide-modal-head">
+      <h2 id="guide-title">Методичка для учителя</h2>
+      <button class="btn btn-secondary" id="btn-guide-close" type="button" autofocus>Закрыть</button>
+    </div>
+    <iframe id="guide-frame" title="Методичка: инструкция, ответы и награды" data-src="files/guide.html"></iframe>
+  </dialog>
+
+  <!-- НАГРАДЫ -->
+  <div class="modal hidden" id="awards-modal">
+    <div class="card">
+      <h2>Награды</h2>
+      <div class="awards" id="awards-list"></div>
+      <div class="card-actions"><button class="btn btn-primary" id="btn-awards-close">Закрыть</button></div>
+    </div>
+  </div>
+
+  <!-- ГРАМОТА -->
+  <div class="modal hidden" id="diploma-modal">
+    <div class="card diploma-card">
+      <div class="diploma" id="diploma">
+        <div class="dip-top">ГРАМОТА</div>
+        <div class="dip-sub">вручается</div>
+        <input class="dip-name" id="dip-name" placeholder="Впиши своё имя" maxlength="40">
+        <div class="dip-text">за помощь Деду Морозу: расшифрованы все <span id="dip-total">15</span> SMS и собраны подарки для ребят!</div>
+        <div class="dip-row"><span id="dip-time"></span><span id="dip-awards"></span></div>
+        <img class="dip-ded" src="files/img/ded-happy.png" alt="">
+        <div class="dip-sign">Дед Мороз</div>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-secondary" id="btn-print">🖨 Распечатать</button>
+        <button class="btn btn-primary" id="btn-diploma-close">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-box" id="toasts"></div>
+  <img class="flyer hidden" id="flyer" alt="">
+
+  <script src="files/letters.js"></script>
+  <script src="files/mechanics.js"></script>
+  <script src="files/rules.js"></script>
+  <script src="files/game.js"></script>
+</body>
+</html>
